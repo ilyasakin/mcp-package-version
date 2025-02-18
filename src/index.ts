@@ -14,11 +14,13 @@ import {
   MavenDependency,
   GradleDependency,
   GoModule,
+  NugetDependencies,
 } from './types/index.js'
 import { NpmHandler } from './handlers/npm.js'
 import { PythonHandler } from './handlers/python.js'
 import { JavaHandler } from './handlers/java.js'
 import { GoHandler } from './handlers/go.js'
+import { NugetHandler } from './handlers/nuget.js'
 
 class PackageVersionServer {
   private server: Server
@@ -26,6 +28,7 @@ class PackageVersionServer {
   private pythonHandler: PythonHandler
   private javaHandler: JavaHandler
   private goHandler: GoHandler
+  private nugetHandler: NugetHandler
 
   constructor() {
     this.server = new Server(
@@ -44,6 +47,7 @@ class PackageVersionServer {
     this.pythonHandler = new PythonHandler()
     this.javaHandler = new JavaHandler()
     this.goHandler = new GoHandler()
+    this.nugetHandler = new NugetHandler()
 
     this.setupToolHandlers()
 
@@ -264,6 +268,23 @@ class PackageVersionServer {
             required: ['dependencies'],
           },
         },
+        {
+          name: 'check_nuget_versions',
+          description: 'Check latest stable versions for NuGet packages',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              dependencies: {
+                type: 'object',
+                additionalProperties: {
+                  type: 'string',
+                },
+                description: 'Dependencies object from packages.config or .csproj file',
+              },
+            },
+            required: ['dependencies'],
+          },
+        },
       ],
     }))
 
@@ -288,6 +309,10 @@ class PackageVersionServer {
           return this.javaHandler.getLatestVersion(request.params.arguments as { dependencies: GradleDependency[] })
         case 'check_go_versions':
           return this.goHandler.getLatestVersion(request.params.arguments as { dependencies: GoModule })
+        case 'check_nuget_versions': {
+          const args = request.params.arguments as { dependencies: NugetDependencies }
+          return await this.nugetHandler.getLatestVersion(args)
+        }
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,

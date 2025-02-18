@@ -1,7 +1,7 @@
 {
   "name": "mcp-package-version",
   "version": "0.1.11",
-  "description": "An MCP server to provide LLMs the latest (stable) version of packages in package.json and requirements.txt files",
+  "description": "An MCP server to provide LLMs the latest (stable) version of packages in package.json, requirements.txt, and NuGet package files",
   "author": {
     "name": "Sam McLeod",
     "url": "https://smcleod.net"
@@ -14,7 +14,9 @@
     "requirements.txt",
     "package.json",
     "npm",
-    "pip"
+    "pip",
+    "nuget",
+    "dotnet"
   ],
   "bugs": {
     "url": "https://github.com/sammcj/mcp-package-version"

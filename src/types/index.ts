@@ -2,7 +2,7 @@ export interface PackageVersion {
   name: string
   currentVersion?: string
   latestVersion: string
-  registry: 'npm' | 'pypi' | 'maven' | 'go'
+  registry: 'npm' | 'pypi' | 'maven' | 'go' | 'nuget'
 }
 
 export interface RegistryConfig {
@@ -57,4 +57,9 @@ export interface GoReplace {
 // Common handler interface
 export interface PackageHandler {
   getLatestVersion(args: any): Promise<{ content: { type: string; text: string }[] }>
+}
+
+// NuGet types
+export interface NugetDependencies {
+  [key: string]: string
 }
